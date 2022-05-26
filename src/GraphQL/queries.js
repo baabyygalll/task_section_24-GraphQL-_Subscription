@@ -39,3 +39,13 @@ export const UPDATE_TODOLIST = gql`
   }
 `;
 
+export const SUBSCRIPTION_TODOLIST = gql`
+  subscription MySubscription {
+    todoList {
+      id
+      is_done
+      title
+    }
+  }
+`;
+

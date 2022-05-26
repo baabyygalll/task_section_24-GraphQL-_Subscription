@@ -1,16 +1,18 @@
 import { useState } from 'react';
 import './App.css';
 import Todo from 'components/Todo';
-import { gql, useQuery, useLazyQuery, useMutation } from '@apollo/client';
+import { gql, useQuery, useLazyQuery, useMutation, useSubscription } from '@apollo/client';
 import { scryRenderedComponentsWithType } from 'react-dom/test-utils';
-import { DELETE_TODOLIST, GET_TODOLIST, INSERT_TODOLIST, UPDATE_TODOLIST } from 'GraphQL/queries';
+import { DELETE_TODOLIST, GET_TODOLIST, INSERT_TODOLIST, SUBSCRIPTION_TODOLIST, UPDATE_TODOLIST } from 'GraphQL/queries';
 
 
 
 
 function TodoList() {
   
-  const { data, loading, error } = useQuery(GET_TODOLIST);
+  // const { data, loading, error } = useQuery(GET_TODOLIST);
+  const { data, loading, error, refetch } = useSubscription(SUBSCRIPTION_TODOLIST);
+   console.log(data);
 
   const [ dataInsert, {loading: loadingInsert}, errorInsert ] = useMutation(
     INSERT_TODOLIST,
@@ -78,6 +80,9 @@ function TodoList() {
     <>
       <div className='container'>
         <h1 className='app-title'>todos</h1>
+        {loading=== true ? 
+        (<h1>loading</h1>) :
+        loading === false && data ? (   
         <ul className='todo-list js-todo-list'>
           {data?.todoList.map((v, i) => (
             <Todo
@@ -89,7 +94,8 @@ function TodoList() {
               checked={v.is_done}
             />
           ))}
-        </ul>
+        </ul>) : <></> }
+     
         <div className='empty-state'>
           <svg className='checklist-icon'>
             <use href='#checklist-icon'></use>
